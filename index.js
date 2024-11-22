@@ -1,26 +1,32 @@
 import express from "express";
 import bodyParser from "body-parser";
-import pg from "pg";
+import dotenv from 'dotenv';
+import pg from 'pg';
 
+// Load environment variables
+dotenv.config();
+
+// Configure the PostgreSQL client using environment variables
 const db = new pg.Client({
-  user: "postgres",
-  host: "localhost",
-  database: "World",
-  password: "Ayush@2122926529",
-  port: 5432,
-})
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
 
 const app = express();
 const port = 3000;
 
 db.connect();
 
-let quiz=[];
+let quiz = [];
 
+// Fetch quiz data from the database
 db.query("SELECT * FROM capitals", (err, res) => {
-  if( err) {
+  if (err) {
     console.log("Error executing query", err.stack);
-  } else{
+  } else {
     quiz = res.rows;
   }
   db.end();
